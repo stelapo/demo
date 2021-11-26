@@ -2,7 +2,6 @@ package com.example.demo.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.time.LocalDate;
 import java.util.UUID;
 
 /**
@@ -22,9 +21,8 @@ public class User   {
   @JsonProperty("address")
   private String address;
 
-  @JsonProperty("birthday")
-  @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE)
-  private LocalDate birthday;
+  @JsonProperty("email")
+  private String email;
 
   public User userId(UUID userId) {
     this.userId = userId;
@@ -34,7 +32,7 @@ public class User   {
   /**
    * Get userId
    * @return userId
-  */
+   */
   public UUID getUserId() {
     return userId;
   }
@@ -51,7 +49,7 @@ public class User   {
   /**
    * Get name
    * @return name
-  */
+   */
   public String getName() {
     return name;
   }
@@ -68,7 +66,7 @@ public class User   {
   /**
    * Get surname
    * @return surname
-  */
+   */
   public String getSurname() {
     return surname;
   }
@@ -85,7 +83,7 @@ public class User   {
   /**
    * Get address
    * @return address
-  */
+   */
   public String getAddress() {
     return address;
   }
@@ -94,21 +92,21 @@ public class User   {
     this.address = address;
   }
 
-  public User birthday(LocalDate birthday) {
-    this.birthday = birthday;
+  public User email(String email) {
+    this.email = email;
     return this;
   }
 
   /**
-   * Get birthday
-   * @return birthday
-  */
-  public LocalDate getBirthday() {
-    return birthday;
+   * Get email
+   * @return email
+   */
+  public String getEmail() {
+    return email;
   }
 
-  public void setBirthday(LocalDate birthday) {
-    this.birthday = birthday;
+  public void setEmail(String email) {
+    this.email = email;
   }
 
 
@@ -122,27 +120,27 @@ public class User   {
     }
     User user = (User) o;
     return Objects.equals(this.userId, user.userId) &&
-        Objects.equals(this.name, user.name) &&
-        Objects.equals(this.surname, user.surname) &&
-        Objects.equals(this.address, user.address) &&
-        Objects.equals(this.birthday, user.birthday);
+            Objects.equals(this.name, user.name) &&
+            Objects.equals(this.surname, user.surname) &&
+            Objects.equals(this.address, user.address) &&
+            Objects.equals(this.email, user.email);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(userId, name, surname, address, birthday);
+    return Objects.hash(userId, name, surname, address, email);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class User {\n");
-    
+
     sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    surname: ").append(toIndentedString(surname)).append("\n");
     sb.append("    address: ").append(toIndentedString(address)).append("\n");
-    sb.append("    birthday: ").append(toIndentedString(birthday)).append("\n");
+    sb.append("    email: ").append(toIndentedString(email)).append("\n");
     sb.append("}");
     return sb.toString();
   }

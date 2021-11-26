@@ -26,9 +26,9 @@ public interface UsersApi {
      *         or an existing user already exists (status code 409)
      */
     @RequestMapping(
-        method = RequestMethod.POST,
-        value = "/user",
-        consumes = { "application/json" }
+            method = RequestMethod.POST,
+            value = "/user",
+            consumes = { "application/json" }
     )
     default ResponseEntity<Void> createUser(@RequestBody(required = false) User user) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
@@ -44,8 +44,8 @@ public interface UsersApi {
      * @return user deleted (status code 201)
      */
     @RequestMapping(
-        method = RequestMethod.DELETE,
-        value = "/user/{userId}"
+            method = RequestMethod.DELETE,
+            value = "/user/{userId}"
     )
     default ResponseEntity<Void> deleteUser(@PathVariable("userId") String userId) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
@@ -54,23 +54,52 @@ public interface UsersApi {
 
 
     /**
-     * GET /user : gets users
+     * GET /user/{userId} : get user by id
+     *
+     * @param userId  (required)
+     * @return get user object (status code 200)
+     *         or bad input parameter (status code 400)
+     */
+    @RequestMapping(
+            method = RequestMethod.GET,
+            value = "/user/{userId}",
+            produces = { "application/json" }
+    )
+    default ResponseEntity<User> getUser(@PathVariable("userId") String userId) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"address\" : \"Via Rossi, Firenze\", \"surname\" : \"Rossi\", \"name\" : \"Mario\", \"userId\" : \"d290f1ee-6c54-4b01-90e6-d701748f0851\", \"email\" : \"infomr@afaef.com\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+
+    /**
+     * GET /users : searches users by name and by surname
      *
      * @param name  (optional)
      * @param surname  (optional)
+     * @param pageNumber  (optional, default to 0)
+     * @param pageSize  (optional, default to 50)
      * @return search results matching criteria (status code 200)
      *         or bad input parameter (status code 400)
      */
     @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/user",
-        produces = { "application/json" }
+            method = RequestMethod.GET,
+            value = "/users",
+            produces = { "application/json" }
     )
-    default ResponseEntity<List<User>> getUsers(@RequestParam(value = "name", required = false) String name, @RequestParam(value = "surname", required = false) String surname) {
+    default ResponseEntity<List<User>> searchUsers(@RequestParam(value = "name", required = false) String name, @RequestParam(value = "surname", required = false) String surname, @RequestParam(value = "pageNumber", required = false, defaultValue = "0") Integer pageNumber, @RequestParam(value = "pageSize", required = false, defaultValue = "50") Integer pageSize) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"birthday\" : \"1982-05-01\", \"address\" : \"Via Rossi, Firenze\", \"surname\" : \"Pancani\", \"name\" : \"Lapo\", \"userId\" : \"d290f1ee-6c54-4b01-90e6-d701748f0851\" }";
+                    String exampleString = "{ \"address\" : \"Via Rossi, Firenze\", \"surname\" : \"Rossi\", \"name\" : \"Mario\", \"userId\" : \"d290f1ee-6c54-4b01-90e6-d701748f0851\", \"email\" : \"infomr@afaef.com\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
@@ -89,9 +118,9 @@ public interface UsersApi {
      * @return user updated (status code 201)
      */
     @RequestMapping(
-        method = RequestMethod.PUT,
-        value = "/user",
-        consumes = { "application/json" }
+            method = RequestMethod.PUT,
+            value = "/user",
+            consumes = { "application/json" }
     )
     default ResponseEntity<Void> updateUser(@RequestBody(required = false) User user) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
