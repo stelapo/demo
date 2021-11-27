@@ -72,7 +72,7 @@ public class UsersApiController implements UsersApi {
     @Override
     public ResponseEntity<Void> deleteUser(@PathVariable("userId") Long userId) {
         userService.deleteUser(userId);
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 
     }
 

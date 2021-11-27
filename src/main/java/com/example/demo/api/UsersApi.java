@@ -44,7 +44,7 @@ public interface UsersApi {
      * Deletes a user from the system
      *
      * @param userId  (required)
-     * @return user deleted (status code 200)
+     * @return user deleted (status code 204)
      *         or resource not found (status code 404)
      */
     @RequestMapping(

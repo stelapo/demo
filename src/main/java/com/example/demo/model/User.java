@@ -19,11 +19,11 @@ public class User {
     )
     private Long userId;
 
-    @NotBlank
+    @NotBlank(message = "Name mustn't be blank")
     @Size(min = 2, max = 100, message = "Name length should be between 2 and 100")
     private String name;
 
-    @NotBlank
+    @NotBlank(message = "Surname mustn't be blank")
     @Size(min = 2, max = 100, message = "Surname length should be between 2 and 100")
     private String surname;
 

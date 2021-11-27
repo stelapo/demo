@@ -18,7 +18,7 @@ public class UserSpecification implements Specification<User> {
 
     @Override
     public Predicate toPredicate(Root<User> user, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-        if (criteria.getOperation().equalsIgnoreCase(":")) {
+        if (criteria.getOperation().equalsIgnoreCase(":") && criteria.getValue() != null) {
             if (user.get(criteria.getKey()).getJavaType() == String.class) {
                 return criteriaBuilder.like(
                         criteriaBuilder.upper(user.get(criteria.getKey())), "%" + criteria.getValue().toString().toUpperCase() + "%");
