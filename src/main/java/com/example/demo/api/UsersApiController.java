@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.NativeWebRequest;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
@@ -34,7 +35,7 @@ public class UsersApiController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
         for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
             if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                 return new ResponseEntity<User>(userService.createUser(user), HttpStatus.CREATED);
@@ -45,7 +46,7 @@ public class UsersApiController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<User> updateUser(@RequestBody User user) {
+    public ResponseEntity<User> updateUser(@Valid @RequestBody User user) {
         for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
             if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                 return new ResponseEntity<User>(userService.updateUser(user), HttpStatus.CREATED);

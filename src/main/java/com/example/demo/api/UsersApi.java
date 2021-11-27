@@ -1,6 +1,8 @@
 package com.example.demo.api;
 
 import com.example.demo.model.User;
+import com.example.demo.validation.OnCreate;
+import com.example.demo.validation.OnUpdate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -9,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.NativeWebRequest;
+
+import javax.validation.Valid;
 import java.util.Optional;
 
 @Validated
@@ -31,7 +35,8 @@ public interface UsersApi {
             value = "/user",
             consumes = { "application/json" }
     )
-    default ResponseEntity<User> createUser(@RequestBody User user) {
+    @Validated(OnCreate.class)
+    default ResponseEntity<User> createUser(@Valid @RequestBody User user) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }
@@ -95,7 +100,7 @@ public interface UsersApi {
             value = "/users",
             produces = { "application/json" }
     )
-    default ResponseEntity<Page<User>> searchUsers(@RequestParam(value = "name", required = false) String name, @RequestParam(value = "surname", required = false) String surname, Pageable pageable/*@RequestParam(value = "page", required = false, defaultValue = "0") Integer page, @RequestParam(value = "size", required = false, defaultValue = "50") Integer size, @RequestParam(value = "sort", required = false) String sort*/) {
+    default ResponseEntity<Page<User>> searchUsers(@RequestParam(value = "name", required = false) String name, @RequestParam(value = "surname", required = false) String surname, Pageable pageable) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
@@ -123,7 +128,8 @@ public interface UsersApi {
             value = "/user",
             consumes = { "application/json" }
     )
-    default ResponseEntity<User> updateUser(@RequestBody User user) {
+    @Validated(OnUpdate.class)
+    default ResponseEntity<User> updateUser(@Valid @RequestBody User user) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }
