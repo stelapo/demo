@@ -1,159 +1,38 @@
 package com.example.demo.model;
 
-import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.UUID;
+import lombok.Data;
 
-/**
- * User
- */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-11-25T17:44:26.218+01:00[Europe/Berlin]")
-public class User   {
-  @JsonProperty("userId")
-  private UUID userId;
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
-  @JsonProperty("name")
-  private String name;
+@Data
+@Entity
+@Table(name = "users")
+public class User {
 
-  @JsonProperty("surname")
-  private String surname;
+    @Id
+    @GeneratedValue(generator = "id_generator")
+    @SequenceGenerator(
+            name = "id_generator",
+            sequenceName = "id_sequence",
+            initialValue = 1
+    )
+    private Long userId;
 
-  @JsonProperty("address")
-  private String address;
+    @NotBlank
+    @Size(min = 2, max = 100)
+    private String name;
 
-  @JsonProperty("email")
-  private String email;
+    @NotBlank
+    @Size(min = 2, max = 100)
+    private String surname;
 
-  public User userId(UUID userId) {
-    this.userId = userId;
-    return this;
-  }
+    @Size(max = 250)
+    private String address;
 
-  /**
-   * Get userId
-   * @return userId
-   */
-  public UUID getUserId() {
-    return userId;
-  }
-
-  public void setUserId(UUID userId) {
-    this.userId = userId;
-  }
-
-  public User name(String name) {
-    this.name = name;
-    return this;
-  }
-
-  /**
-   * Get name
-   * @return name
-   */
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public User surname(String surname) {
-    this.surname = surname;
-    return this;
-  }
-
-  /**
-   * Get surname
-   * @return surname
-   */
-  public String getSurname() {
-    return surname;
-  }
-
-  public void setSurname(String surname) {
-    this.surname = surname;
-  }
-
-  public User address(String address) {
-    this.address = address;
-    return this;
-  }
-
-  /**
-   * Get address
-   * @return address
-   */
-  public String getAddress() {
-    return address;
-  }
-
-  public void setAddress(String address) {
-    this.address = address;
-  }
-
-  public User email(String email) {
-    this.email = email;
-    return this;
-  }
-
-  /**
-   * Get email
-   * @return email
-   */
-  public String getEmail() {
-    return email;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    User user = (User) o;
-    return Objects.equals(this.userId, user.userId) &&
-            Objects.equals(this.name, user.name) &&
-            Objects.equals(this.surname, user.surname) &&
-            Objects.equals(this.address, user.address) &&
-            Objects.equals(this.email, user.email);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(userId, name, surname, address, email);
-  }
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class User {\n");
-
-    sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
-    sb.append("    name: ").append(toIndentedString(name)).append("\n");
-    sb.append("    surname: ").append(toIndentedString(surname)).append("\n");
-    sb.append("    address: ").append(toIndentedString(address)).append("\n");
-    sb.append("    email: ").append(toIndentedString(email)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
-    }
-    return o.toString().replace("\n", "\n    ");
-  }
+    @Size(max = 100)
+    @Email
+    private String email;
 }
-

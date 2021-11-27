@@ -1,6 +1,7 @@
 package com.example.demo.api;
 
 import com.example.demo.model.User;
+import com.example.demo.model.UserDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public interface UsersApi {
             value = "/user",
             consumes = { "application/json" }
     )
-    default ResponseEntity<Void> createUser(@RequestBody(required = false) User user) {
+    default ResponseEntity<User> createUser(@RequestBody(required = false) User user) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }
@@ -41,13 +42,13 @@ public interface UsersApi {
      * Deletes a user from the system
      *
      * @param userId  (required)
-     * @return user deleted (status code 201)
+     * @return user deleted (status code 200)
      */
     @RequestMapping(
             method = RequestMethod.DELETE,
             value = "/user/{userId}"
     )
-    default ResponseEntity<Void> deleteUser(@PathVariable("userId") String userId) {
+    default ResponseEntity<Void> deleteUser(@PathVariable("userId") Long userId) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }
@@ -65,11 +66,11 @@ public interface UsersApi {
             value = "/user/{userId}",
             produces = { "application/json" }
     )
-    default ResponseEntity<User> getUser(@PathVariable("userId") String userId) {
+    default ResponseEntity<User> getUser(@PathVariable("userId") Long userId) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"address\" : \"Via Rossi, Firenze\", \"surname\" : \"Rossi\", \"name\" : \"Mario\", \"userId\" : \"d290f1ee-6c54-4b01-90e6-d701748f0851\", \"email\" : \"infomr@afaef.com\" }";
+                    String exampleString = "{ \"address\" : \"Via Rossi, Firenze\", \"surname\" : \"Rossi\", \"name\" : \"Mario\", \"userId\" : 1, \"email\" : \"infomr@afaef.com\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
@@ -95,11 +96,11 @@ public interface UsersApi {
             value = "/users",
             produces = { "application/json" }
     )
-    default ResponseEntity<List<User>> searchUsers(@RequestParam(value = "name", required = false) String name, @RequestParam(value = "surname", required = false) String surname, @RequestParam(value = "pageNumber", required = false, defaultValue = "0") Integer pageNumber, @RequestParam(value = "pageSize", required = false, defaultValue = "50") Integer pageSize) {
+    default ResponseEntity<List<UserDto>> searchUsers(@RequestParam(value = "name", required = false) String name, @RequestParam(value = "surname", required = false) String surname, @RequestParam(value = "pageNumber", required = false, defaultValue = "0") Integer pageNumber, @RequestParam(value = "pageSize", required = false, defaultValue = "50") Integer pageSize) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"address\" : \"Via Rossi, Firenze\", \"surname\" : \"Rossi\", \"name\" : \"Mario\", \"userId\" : \"d290f1ee-6c54-4b01-90e6-d701748f0851\", \"email\" : \"infomr@afaef.com\" }";
+                    String exampleString = "{ \"address\" : \"Via Rossi, Firenze\", \"surname\" : \"Rossi\", \"name\" : \"Mario\", \"userId\" : 1, \"email\" : \"infomr@afaef.com\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
@@ -122,7 +123,7 @@ public interface UsersApi {
             value = "/user",
             consumes = { "application/json" }
     )
-    default ResponseEntity<Void> updateUser(@RequestBody(required = false) User user) {
+    default ResponseEntity<User> updateUser(@RequestBody(required = false) User user) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }
