@@ -1,8 +1,6 @@
 package com.example.demo.api;
 
 import com.example.demo.model.User;
-import com.example.demo.validation.OnCreate;
-import com.example.demo.validation.OnUpdate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -35,7 +33,6 @@ public interface UsersApi {
             value = "/user",
             consumes = { "application/json" }
     )
-    @Validated(OnCreate.class)
     default ResponseEntity<User> createUser(@Valid @RequestBody User user) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
@@ -119,17 +116,17 @@ public interface UsersApi {
      * PUT /user : updates a user
      * Updates a new user to the system
      *
+     * @param userId  (required)
      * @param user Inventory item to update (required)
      * @return user updated (status code 201)
      *         or resource not found (status code 404)
      */
     @RequestMapping(
             method = RequestMethod.PUT,
-            value = "/user",
+            value = "/user/{userId}",
             consumes = { "application/json" }
     )
-    @Validated(OnUpdate.class)
-    default ResponseEntity<User> updateUser(@Valid @RequestBody User user) {
+    default ResponseEntity<User> updateUser(@PathVariable("userId") Long userId, @Valid @RequestBody User user) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }

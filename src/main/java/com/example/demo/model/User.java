@@ -1,7 +1,5 @@
 package com.example.demo.model;
 
-import com.example.demo.validation.OnCreate;
-import com.example.demo.validation.OnUpdate;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -19,8 +17,6 @@ public class User {
             sequenceName = "id_user_sequence",
             initialValue = 1
     )
-    @Null(groups = OnCreate.class, message = "User id must be null on create")
-    @NotNull(groups = OnUpdate.class, message = "User id must not be null on update")
     private Long userId;
 
     @NotBlank

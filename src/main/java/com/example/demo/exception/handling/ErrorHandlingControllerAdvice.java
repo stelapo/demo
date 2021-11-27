@@ -1,5 +1,8 @@
-package com.example.demo.validation;
+package com.example.demo.exception.handling;
 
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.model.ManagedErrorResponse;
+import com.example.demo.model.ValidationErrorResponse;
 import com.example.demo.model.Violation;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
@@ -39,5 +42,13 @@ public class ErrorHandlingControllerAdvice {
                     new Violation(fieldError.getField(), fieldError.getDefaultMessage()));
         }
         return error;
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    ManagedErrorResponse onResourceNotFoundException(
+            ResourceNotFoundException e) {
+        return new ManagedErrorResponse(HttpStatus.NOT_FOUND.value(), "Resource Not Found", e.getMessage().toString());
     }
 }

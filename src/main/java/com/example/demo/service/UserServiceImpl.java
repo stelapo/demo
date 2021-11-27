@@ -2,7 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.User;
-import com.example.demo.repository.SearchCriteria;
+import com.example.demo.model.SearchCriteria;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.UserSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +25,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(User user) {
-        return userRepository.findById(user.getUserId())
+    public User updateUser(Long userId, User user) {
+        return userRepository.findById(userId)
                 .map(
-                        userToUpdate -> userRepository.save(user)
+                        (userToUpdate) -> {
+                            user.setUserId(userToUpdate.getUserId());
+                            return userRepository.save(user);
+                        }
                 )
                 .orElseThrow(
-                        () -> new ResourceNotFoundException("User not found with id " + user.getUserId())
+                        () -> new ResourceNotFoundException("User not found with id " + userId)
                 )
                 ;
     }

@@ -1,6 +1,5 @@
-package com.example.demo.validation;
+package com.example.demo.model;
 
-import com.example.demo.model.Violation;
 import lombok.Data;
 
 import java.util.ArrayList;

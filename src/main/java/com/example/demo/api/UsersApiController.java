@@ -46,10 +46,10 @@ public class UsersApiController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<User> updateUser(@Valid @RequestBody User user) {
+    public ResponseEntity<User> updateUser(@PathVariable("userId") Long userId, @Valid @RequestBody User user) {
         for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
             if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                return new ResponseEntity<User>(userService.updateUser(user), HttpStatus.CREATED);
+                return new ResponseEntity<User>(userService.updateUser(userId, user), HttpStatus.CREATED);
             }
         }
 

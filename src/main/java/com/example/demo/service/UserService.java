@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 public interface UserService {
     User createUser(User user);
 
-    User updateUser(User userId);
+    User updateUser(Long userId, User user);
 
     User findUser(Long userId);
 
