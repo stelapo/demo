@@ -1,21 +1,20 @@
 package com.example.demo.api;
 
 import com.example.demo.model.User;
-import com.example.demo.model.UserDto;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.NativeWebRequest;
+
 import java.util.Optional;
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2021-11-25T17:44:26.218+01:00[Europe/Berlin]")
-@Controller
-@RequestMapping("${openapi.simpleUser.base-path:/demo/1.0.0}")
+
+@RestController
+@RequestMapping("${simpleUser.basepath:/demo/1.0.0}")
 public class UsersApiController implements UsersApi {
 
     private final NativeWebRequest request;
@@ -35,19 +34,37 @@ public class UsersApiController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<User> createUser(@RequestBody(required = false) User user) {
-        return new ResponseEntity<User>(userService.createUser(user), HttpStatus.CREATED);
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                return new ResponseEntity<User>(userService.createUser(user), HttpStatus.CREATED);
+            }
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     @Override
-    public ResponseEntity<User> updateUser(@RequestBody(required = false) User user) {
-        return new ResponseEntity<User>(userService.updateUser(user), HttpStatus.CREATED);
+    public ResponseEntity<User> updateUser(@RequestBody User user) {
+        for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                return new ResponseEntity<User>(userService.updateUser(user), HttpStatus.CREATED);
+            }
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }
 
     @Override
     public ResponseEntity<User> getUser(@PathVariable("userId") Long userId) {
-        return new ResponseEntity<User>(userService.findUser(userId), HttpStatus.OK);
+        for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                return new ResponseEntity<User>(userService.findUser(userId), HttpStatus.OK);
+            }
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }
 
@@ -56,6 +73,17 @@ public class UsersApiController implements UsersApi {
         userService.deleteUser(userId);
         return new ResponseEntity<Void>(HttpStatus.OK);
 
+    }
+
+    @Override
+    public ResponseEntity<Page<User>> searchUsers(@RequestParam(value = "name", required = false) String name, @RequestParam(value = "surname", required = false) String surname, Pageable pageable) {
+        for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                return new ResponseEntity<>(userService.findByNameAndSurname(name, surname, pageable), HttpStatus.OK);
+            }
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
 }
