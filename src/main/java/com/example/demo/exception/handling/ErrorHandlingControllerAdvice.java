@@ -49,6 +49,6 @@ public class ErrorHandlingControllerAdvice {
     @ResponseBody
     ManagedErrorResponse onResourceNotFoundException(
             ResourceNotFoundException e) {
-        return new ManagedErrorResponse(HttpStatus.NOT_FOUND.value(), "Resource Not Found", e.getMessage().toString());
+        return new ManagedErrorResponse(HttpStatus.NOT_FOUND.value(), "Resource Not Found", e.getMessage());
     }
 }
