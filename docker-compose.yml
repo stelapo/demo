@@ -13,6 +13,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=demo-postgres
       - SPRING_DATASOURCE_PASSWORD=demo-postgres
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - TZ=Europe/Rome
     ports:
       - "8080:8080"
 
@@ -22,5 +23,6 @@ services:
     environment:
       - POSTGRES_USER=demo-postgres
       - POSTGRES_PASSWORD=demo-postgres
+      - TZ=Europe/Rome
     ports:
       - "5432:5432"
