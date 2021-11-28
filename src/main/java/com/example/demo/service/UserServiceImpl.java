@@ -4,12 +4,16 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.User;
 import com.example.demo.model.SearchCriteria;
 import com.example.demo.repository.UserRepository;
-import com.example.demo.repository.UserSpecification;
+import com.example.demo.repository.specification.UserSpecification;
+import com.example.demo.repository.specification.UserSpecificationsBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -77,5 +81,18 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.findAll(Specification.where(specName).and(surName), pageable);
 
+    }
+
+    @Override
+    public Page<User> findBySearchString(String searchString, Pageable pageable) {
+        UserSpecificationsBuilder builder = new UserSpecificationsBuilder();
+        Pattern pattern = Pattern.compile(SearchCriteria.searchStringPattern);
+        Matcher matcher = pattern.matcher(searchString);
+        while (matcher.find()) {
+            builder.addSearchCriteria(matcher.group(1), matcher.group(2), matcher.group(3));
+        }
+
+        Specification<User> spec = builder.build();
+        return userRepository.findAll(spec, pageable);
     }
 }

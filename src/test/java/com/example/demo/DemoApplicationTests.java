@@ -45,7 +45,7 @@ class DemoApplicationTests {
     }
 
     @Test
-    public void test01PostResource() throws Exception {
+    public void test01_PostResource() throws Exception {
 
         mockMvc.perform(
                         post(context + "/user")
@@ -67,7 +67,7 @@ class DemoApplicationTests {
     }
 
     @Test
-    public void test02PutResource() throws Exception {
+    public void test02_PutResource() throws Exception {
 
         mockMvc.perform(
                         put(context + "/user/1")
@@ -89,7 +89,7 @@ class DemoApplicationTests {
     }
 
     @Test
-    public void test03GetResource() throws Exception {
+    public void test03_GetResource() throws Exception {
         mockMvc.perform(
                         get(context + "/user/1")
                                 .headers(httpHeaders)
@@ -102,7 +102,7 @@ class DemoApplicationTests {
     }
 
     @Test
-    public void test04SearchResource() throws Exception {
+    public void test04_SearchResource() throws Exception {
         mockMvc.perform(
                         get(context + "/users")
                                 .headers(httpHeaders)
@@ -120,7 +120,7 @@ class DemoApplicationTests {
     }
 
     @Test
-    public void test05PostResource() throws Exception {
+    public void test05_PostResource() throws Exception {
 
         mockMvc.perform(
                         post(context + "/user")
@@ -142,7 +142,7 @@ class DemoApplicationTests {
     }
 
     @Test
-    public void test06SearchWithSort() throws Exception {
+    public void test06_SearchWithSort() throws Exception {
         mockMvc.perform(
                         get(context + "/users")
                                 .headers(httpHeaders)
@@ -159,7 +159,7 @@ class DemoApplicationTests {
     }
 
     @Test
-    public void test07SearchWithSortAndSize() throws Exception {
+    public void test07_SearchWithPageable() throws Exception {
         mockMvc.perform(
                         get(context + "/users")
                                 .headers(httpHeaders)
@@ -178,7 +178,7 @@ class DemoApplicationTests {
     }
 
     @Test
-    public void test08SearchWithName() throws Exception {
+    public void test08_SearchWithName() throws Exception {
         mockMvc.perform(
                         get(context + "/users")
                                 .headers(httpHeaders)
@@ -195,7 +195,7 @@ class DemoApplicationTests {
     }
 
     @Test
-    public void test08SearchWithSurName() throws Exception {
+    public void test09_SearchWithSurName() throws Exception {
         mockMvc.perform(
                         get(context + "/users")
                                 .headers(httpHeaders)
@@ -211,13 +211,111 @@ class DemoApplicationTests {
                 .andExpect(jsonPath("$.content[0].email").value("infolp@pippo.com"));
     }
 
+    @Test
+    public void test10_SearchWithSearchString() throws Exception {
+        mockMvc.perform(
+                        get(context + "/search")
+                                .headers(httpHeaders)
+                                .queryParam("searchString", "name:\"m\"~surname:\"r\"")
+                ).andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content", hasSize(1)))
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.content[0].userId").value(1))
+                .andExpect(jsonPath("$.content[0].name").value("Mario"))
+                .andExpect(jsonPath("$.content[0].surname").value("Rossi"))
+                .andExpect(jsonPath("$.content[0].address").value("Via Verdi, Arezzo"))
+                .andExpect(jsonPath("$.content[0].email").value("infolp@pippo.com"));
+    }
+
+    @Test
+    public void test11_SearchWith_SearchString_And_Pageable() throws Exception {
+        mockMvc.perform(
+                        get(context + "/search")
+                                .headers(httpHeaders)
+                                .queryParam("searchString", "name:\"a\"")
+                                .queryParam("sort", "userId,asc")
+                                .queryParam("page", "0")
+                                .queryParam("size", "2")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content", hasSize(2)))
+                .andExpect(jsonPath("$.totalElements").value(2))
+                .andExpect(jsonPath("$.content[0].userId").value(1))
+                .andExpect(jsonPath("$.content[1].userId").value(2));
+    }
+
+    @Test
+    public void test12_SearchWith_SearchStringEmpty_BAD_REQUEST() throws Exception {
+        mockMvc.perform(
+                        get(context + "/search")
+                                .headers(httpHeaders)
+                                .queryParam("searchString", "searchString", "")
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.violations[0].fieldName").value("searchUsers.searchString"))
+                .andExpect(jsonPath("$.violations[0].message").value("must match \"((\\w+?)(:|<|>)\"([^\"]+)\"[~]?)+?\""));
+    }
+
     @ParameterizedTest
     @ValueSource(ints = {1, 2})
-    public void test09DeleteResource(int userId) throws Exception {
+    public void test13_DeleteResource(int userId) throws Exception {
         mockMvc.perform(
                         delete(context + "/user/" + userId)
                                 .headers(httpHeaders)
                 ).andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void test14_PutResource_NOT_FOUND() throws Exception {
+
+        mockMvc.perform(
+                        put(context + "/user/1")
+                                .headers(httpHeaders)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("{\n" +
+                                        "    \"email\": \"infolp@pippo.com\",\n" +
+                                        "    \"address\": \"Via Verdi, Arezzo\",\n" +
+                                        "    \"surname\": \"Rossi\",\n" +
+                                        "    \"name\": \"Mario\"\n" +
+                                        "}")
+                )
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.httpStatus").value(404))
+                .andExpect(jsonPath("$.error").value("Resource Not Found"))
+                .andExpect(jsonPath("$.message").value("User not found with id 1"));
+    }
+
+    @Test
+    public void test15_GetResource() throws Exception {
+        mockMvc.perform(
+                        get(context + "/user/2")
+                                .headers(httpHeaders)
+                )
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.httpStatus").value(404))
+                .andExpect(jsonPath("$.error").value("Resource Not Found"))
+                .andExpect(jsonPath("$.message").value("User not found with id 2"));
+    }
+
+    @Test
+    public void test16_PostResource_EMAIL_NOT_VALID() throws Exception {
+
+        mockMvc.perform(
+                        post(context + "/user")
+                                .headers(httpHeaders)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("{\n" +
+                                        "    \"email\": \"infolp\",\n" +
+                                        "    \"address\": \"Via Rossi, Firenze\",\n" +
+                                        "    \"surname\": \"Pancani\",\n" +
+                                        "    \"name\": \"Lapo\"\n" +
+                                        "}")
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.violations[0].fieldName").value("email"))
+                .andExpect(jsonPath("$.violations[0].message").value("Email should be valid"));
     }
 
 }

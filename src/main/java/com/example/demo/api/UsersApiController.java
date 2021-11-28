@@ -1,5 +1,6 @@
 package com.example.demo.api;
 
+import com.example.demo.model.SearchCriteria;
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.NativeWebRequest;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 import java.util.Optional;
 
 @RestController
@@ -85,6 +87,18 @@ public class UsersApiController implements UsersApi {
         }
 
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    @Override
+    public ResponseEntity<Page<User>> searchUsers(@Pattern(regexp = SearchCriteria.searchStringPatternForController) @RequestParam(value = "searchString", required = false) String searchString, Pageable pageable) {
+        for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                return new ResponseEntity<>(userService.findBySearchString(searchString, pageable), HttpStatus.OK);
+            }
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
     }
 
 }

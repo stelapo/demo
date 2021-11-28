@@ -1,5 +1,6 @@
 package com.example.demo.api;
 
+import com.example.demo.model.SearchCriteria;
 import com.example.demo.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.NativeWebRequest;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 import java.util.Optional;
 
 @Validated
@@ -127,6 +129,32 @@ public interface UsersApi {
             consumes = { "application/json" }
     )
     default ResponseEntity<User> updateUser(@PathVariable("userId") Long userId, @Valid @RequestBody User user) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+    /**
+     * GET /users : searches users by name and by surname
+     *
+     * @param searchString  (optional)
+     * @param pageable  (optional)
+     * @return search results matching criteria (status code 200)
+     */
+    @RequestMapping(
+            method = RequestMethod.GET,
+            value = "/search",
+            produces = { "application/json" }
+    )
+    default ResponseEntity<Page<User>> searchUsers(@Pattern(regexp = SearchCriteria.searchStringPatternForController) @RequestParam(value = "searchString", required = false) String searchString, Pageable pageable) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"content\" : [ { \"address\" : \"Via Rossi, Firenze\", \"surname\" : \"Rossi\", \"name\" : \"Mario\", \"userId\" : 1, \"email\" : \"infomr@afaef.com\" }, { \"address\" : \"Via Rossi, Firenze\", \"surname\" : \"Rossi\", \"name\" : \"Mario\", \"userId\" : 1, \"email\" : \"infomr@afaef.com\" } ] }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }

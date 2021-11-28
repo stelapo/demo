@@ -1,4 +1,4 @@
-package com.example.demo.repository;
+package com.example.demo.repository.specification;
 
 import com.example.demo.model.SearchCriteria;
 import com.example.demo.model.User;
@@ -18,12 +18,14 @@ public class UserSpecification implements Specification<User> {
 
     @Override
     public Predicate toPredicate(Root<User> user, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-        if (criteria.getOperation().equalsIgnoreCase(":") && criteria.getValue() != null) {
-            if (user.get(criteria.getKey()).getJavaType() == String.class) {
-                return criteriaBuilder.like(
-                        criteriaBuilder.upper(user.get(criteria.getKey())), "%" + criteria.getValue().toString().toUpperCase() + "%");
-            } else {
-                return criteriaBuilder.equal(user.get(criteria.getKey()), criteria.getValue());
+        if (criteria.getValue() != null) {
+            if (criteria.getOperation().equalsIgnoreCase(":")) {
+                if (user.get(criteria.getKey()).getJavaType() == String.class) {
+                    return criteriaBuilder.like(
+                            criteriaBuilder.upper(user.get(criteria.getKey())), "%" + criteria.getValue().toString().toUpperCase() + "%");
+                } else { //per eventuali futuri parametri interi
+                    return criteriaBuilder.equal(user.get(criteria.getKey()), criteria.getValue());
+                }
             }
         }
         return criteriaBuilder.conjunction();
