@@ -25,7 +25,6 @@ public class UsersApiController implements UsersApi {
     @Autowired
     UserService userService;
 
-
     @Autowired
     public UsersApiController(NativeWebRequest request) {
         this.request = request;
@@ -38,10 +37,8 @@ public class UsersApiController implements UsersApi {
 
     @Override
     public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
-        for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-            if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                return new ResponseEntity<User>(userService.createUser(user), HttpStatus.CREATED);
-            }
+        if (ApiUtil.applicationJsonHeaderExists(request)) {
+            return new ResponseEntity<User>(userService.createUser(user), HttpStatus.CREATED);
         }
 
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
@@ -49,10 +46,8 @@ public class UsersApiController implements UsersApi {
 
     @Override
     public ResponseEntity<User> updateUser(@PathVariable("userId") Long userId, @Valid @RequestBody User user) {
-        for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-            if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                return new ResponseEntity<User>(userService.updateUser(userId, user), HttpStatus.CREATED);
-            }
+        if (ApiUtil.applicationJsonHeaderExists(request)) {
+            return new ResponseEntity<User>(userService.updateUser(userId, user), HttpStatus.CREATED);
         }
 
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
@@ -61,29 +56,23 @@ public class UsersApiController implements UsersApi {
 
     @Override
     public ResponseEntity<User> getUser(@PathVariable("userId") Long userId) {
-        for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-            if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                return new ResponseEntity<User>(userService.findUser(userId), HttpStatus.OK);
-            }
+        if (ApiUtil.applicationJsonHeaderExists(request)) {
+            return new ResponseEntity<User>(userService.findUser(userId), HttpStatus.OK);
         }
 
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
     }
 
     @Override
     public ResponseEntity<Void> deleteUser(@PathVariable("userId") Long userId) {
         userService.deleteUser(userId);
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
-
     }
 
     @Override
     public ResponseEntity<Page<User>> searchUsers(@RequestParam(value = "name", required = false) String name, @RequestParam(value = "surname", required = false) String surname, Pageable pageable) {
-        for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-            if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                return new ResponseEntity<>(userService.findByNameAndSurname(name, surname, pageable), HttpStatus.OK);
-            }
+        if (ApiUtil.applicationJsonHeaderExists(request)) {
+            return new ResponseEntity<>(userService.findByNameAndSurname(name, surname, pageable), HttpStatus.OK);
         }
 
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
@@ -91,14 +80,11 @@ public class UsersApiController implements UsersApi {
 
     @Override
     public ResponseEntity<Page<User>> searchUsers(@Pattern(regexp = SearchCriteria.searchStringPatternForController) @RequestParam(value = "searchString", required = false) String searchString, Pageable pageable) {
-        for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-            if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                return new ResponseEntity<>(userService.findBySearchString(searchString, pageable), HttpStatus.OK);
-            }
+        if (ApiUtil.applicationJsonHeaderExists(request)) {
+            return new ResponseEntity<>(userService.findBySearchString(searchString, pageable), HttpStatus.OK);
         }
 
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
     }
 
 }
