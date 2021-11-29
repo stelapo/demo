@@ -30,17 +30,6 @@ public class SpecificationsTest {
     @Autowired
     UserRepository repository;
 
-    /*@TestConfiguration
-    static class UserServiceImplTestContextConfiguration {
-        @Bean
-        public UserService userService() {
-            return new UserServiceImpl();
-        }
-    }
-
-    @Autowired
-    UserService userService;*/
-
     private User userLP;
     private User userMR;
 
