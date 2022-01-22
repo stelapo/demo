@@ -5,6 +5,7 @@ import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.specification.UserSpecification;
 import com.example.demo.repository.specification.UserSpecificationsBuilder;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -60,6 +61,7 @@ public class SpecificationsTest {
 
         assertThat(userLP, is(in(results)));
         assertThat(userMR, not(is(in(results))));
+        Assertions.assertThat(userMR).isNotIn(results);
     }
 
     @Test
